@@ -1,38 +1,41 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('contact-form');
-  const submitBtn = form.querySelector('button');
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  const statusMessage = document.getElementById("status-message");
 
-  form.addEventListener('submit', function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    const name = document.querySelector("#name").value.trim();
+    const email = document.querySelector("#email").value.trim();
+    const message = document.querySelector("#message").value.trim();
 
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
+    // Clear previous message
+    statusMessage.textContent = "";
+    statusMessage.className = "";
 
-    fetch('/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, message }),
-    })
-      .then(response => response.json().then(data => ({ status: response.status, body: data })))
-      .then(result => {
-        if (result.status === 200) {
-          alert(result.body.message || 'Message sent!');
-          form.reset();
-        } else {
-          alert(result.body.error || 'Failed to send message.');
-        }
-      })
-      .catch(error => {
-        console.error('Network error:', error);
-        alert('Network error. Please try again later.');
-      })
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Message';
+    try {
+      const response = await fetch("http://localhost:3000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, message })
       });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        statusMessage.textContent = "Message sent successfully!";
+        statusMessage.className = "success";
+        form.reset();
+      } else {
+        statusMessage.textContent = result.message || "There was an error sending your message.";
+        statusMessage.className = "error";
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      statusMessage.textContent = "Failed to send message. Server may be offline.";
+      statusMessage.className = "error";
+    }
   });
 });

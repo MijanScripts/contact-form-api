@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const path = require('path');
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+app.use(cors());
 
 // Serve static files (your HTML, CSS, JS) from 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,23 +22,21 @@ const pool = new Pool({
 });
 
 // POST /contact endpoint to receive form submissions
-app.post('/contact', async (req, res) => {
+app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
 
-  // Basic validation
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'Please fill all required fields.' });
-  }
-
   try {
-    const query = `INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)`;
-    await pool.query(query, [name, email, message]);
-    res.status(200).json({ message: 'Your message has been received. Thank you!' });
-  } catch (error) {
-    console.error('Error saving message:', error);
-    res.status(500).json({ error: 'Internal server error.' });
+    await pool.query(
+      "INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)",
+      [name, email, message]
+    );
+    res.status(200).json({ success: true, message: "Message sent!" });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ success: false, message: "Server error." });
   }
 });
+
 
 // Start server
 app.listen(PORT, () => {

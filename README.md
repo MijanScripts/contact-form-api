@@ -1,6 +1,6 @@
 # contact-form-api
-Backend source code api for my portfolio contact form  
-**Technical Report: Full-Stack Portfolio Deployment on AWS EC2**
+
+**Technical Report: Full-Stack Contact-Form Deployment on AWS EC2**
 
 ---
 
@@ -175,7 +175,7 @@ The contact form successfully submits messages, which are stored in the PostgreS
 
 ### 9. Conclusion
 
-This project covered the complete workflow of building and deploying a full-stack application. Git was used to clone the project to the EC2 instance, eliminating the need for manual file transfers. PostgreSQL, Node.js, and Apache were configured on the same server to deliver both static and dynamic content. The result is a stable, cloud-hosted portfolio site with a working contact form and database integration.
+This project covered the complete workflow of building and deploying a full-stack application. Git was used to clone the project to the EC2 instance, eliminating the need for manual file transfers. PostgreSQL, Node.js, and Apache were configured on the same server to deliver both static and dynamic content. The result is a stable, cloud-hosted contact-form site with a working contact form and database integration.
 
 **Future Improvements:**
 
